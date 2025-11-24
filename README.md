@@ -17,15 +17,15 @@
 
 ## 📁 Project Structure（项目结构）
 
-matplotlib-demos/
-│
-├── scripts/ # 绘图脚本
-│ ├── line_plot.py
-│ ├── bar_chart.py
-│ ├── scatter_plot.py
-│ └── ...
-│
-├── examples/ # 输出图片文件(可选)
-│
-├── requirements.txt # Python 依赖
-└── README.md
+matplotlib-demos/  
+│  
+├── scripts/ # 绘图脚本  
+│ ├── line_plot.py  
+│ ├── bar_chart.py  
+│ ├── scatter_plot.py  
+│ └── ...  
+│  
+├── examples/ # 输出图片文件(可选)  
+│  
+├── requirements.txt # Python 依赖  
+└── README.md  
