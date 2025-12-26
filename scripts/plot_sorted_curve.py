@@ -1,53 +1,58 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_sorted_curve(y_true, y_pred):
-    sorted_idx = np.argsort(y_true)
-    # "o"：圆圈
-    # "s"：方块
-    # "^"：上三角
-    # "v"：下三角
-    # "<"：左三角
-    # ">"：右三角
-    # "d"：菱形
-    # "p"：五边形
-    # "*"：星号
-    # "+"：加号
-    # "x"：叉号
-    # "."：点
-    # ","：像素点
-    # "h"：六边形1
-    # "H"：六边形2
-    # "1"：下花三
-    # "2"：上花三
-    # "3"：左花三
-    # "4"：右花三
-    # "|"：竖线
-    # "_"：横线
-    # 可调参数
-    true_color = "#D47B3B"
-    pred_color = "#72B6A1" # 
-    true_marker = "o"
-    pred_marker = "s"
-    true_linewidth = 2
-    pred_linewidth = 1
-    true_markersize = 2
-    pred_markersize = 2
-    font_size = 14
-    title_size = 16
-    xtick_labelsize = 18          # x轴刻度数字大小（如：10, 12, 14, 16）
-    ytick_labelsize = 18          # y轴刻度数字大小（如：10, 12, 14, 16）
+def plot_sorted_curve(y_true, y_pred, save_path="sorted_curve.png",
+                      true_color="#D47B3B", pred_color="#72B6A1",
+                      true_marker="o", pred_marker="s",
+                      true_linewidth=2, pred_linewidth=1,
+                      true_markersize=2, pred_markersize=2,
+                      figsize=(8,6), title="Sorted True vs Predicted",
+                      xtick_labelsize=18, ytick_labelsize=18):
+    """
+    绘制按真实值排序后的真实值与预测值曲线。
 
-    plt.figure(figsize=(8, 6))
+    参数
+    ----------
+    y_true : np.ndarray
+        真实值数组
+    y_pred : np.ndarray
+        预测值数组
+    save_path : str
+        保存图像路径
+    true_color : str
+        真实值曲线颜色
+    pred_color : str
+        预测值曲线颜色
+    true_marker : str
+        真实值曲线标记
+    pred_marker : str
+        预测值曲线标记
+    true_linewidth : float
+        真实值曲线线宽
+    pred_linewidth : float
+        预测值曲线线宽
+    true_markersize : float
+        真实值曲线标记大小
+    pred_markersize : float
+        预测值曲线标记大小
+    figsize : tuple
+        图像大小
+    title : str
+        图标题
+    xtick_labelsize : int
+        x轴刻度字体大小
+    ytick_labelsize : int
+        y轴刻度字体大小
+    """
+    sorted_idx = np.argsort(y_true)
+
+    plt.figure(figsize=figsize)
     plt.plot(y_true[sorted_idx], label="True", marker=true_marker, color=true_color,
              lw=true_linewidth, markersize=true_markersize)
     plt.plot(y_pred[sorted_idx], label="Pred", marker=pred_marker, color=pred_color,
              lw=pred_linewidth, markersize=pred_markersize)
 
-    # plt.xlabel("Sample (sorted by true value)", fontsize=font_size)
-    # plt.ylabel("Value", fontsize=font_size)
-    # plt.title("Sorted True vs Predicted", fontsize=title_size, fontweight="bold")
-    # 设置坐标轴刻度数字大小
+    plt.title(title, fontsize=16, fontweight="bold")
     plt.tick_params(axis='x', labelsize=xtick_labelsize)
     plt.tick_params(axis='y', labelsize=ytick_labelsize)
     plt.legend()
@@ -56,35 +61,28 @@ def plot_sorted_curve(y_true, y_pred):
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
-    plt.grid(False)  # 关闭网格。注意：plt.grid(False) 即可完全关闭背景网格，若要显示可用 plt.grid(True, linestyle="--", alpha=0.5)
-    # plt.grid(True, linestyle="--", alpha=0.5)
+    plt.grid(False)
     plt.tight_layout()
-    plt.savefig("sorted_curve6.png", dpi=300)
+    plt.savefig(save_path, dpi=300)
     plt.close()
 
-if __name__ == "__main__":
-    # y_true = np.array([3, 5, 7, 9, 11])
-    # y_pred = np.array([2.8, 5.2, 6.5, 8.9, 11.3])
-    # plot_sorted_curve(y_true, y_pred)
-    label_list = []
-    # ID,UniProt,Assay Result,pInteraction,Normal SMILES,SMILES,FusionSmi,Mapped_SMILES,IntSeq,Sequence
-    with open('/home/wjl/data/DTI_prj/Arch_Lab/写作图相关代码/FusionSmi_项目图/亲和力相关指标作图/raw_data/FusionSmi/1024_test.csv', 'r') as f:
-        next(f)  # 跳过标题行
-        for line in f:
-            line = line.strip().split(',')
-            label_list.append(float(line[3]))  # 第4列是label
+# import numpy as np
+# import pandas as pd
 
-    # 从日志文件提取预测值
-    pred_list = []
-    with open("/home/wjl/data/DTI_prj/Arch_Lab/写作图相关代码/FusionSmi_项目图/亲和力相关指标作图/raw_data/FusionSmi/test_evalue_log_1024_1.txt", "r") as f:  # 这里替换成你的日志文件路径
-        for line in f:
-            if "Predicted affinity:" in line:
-                import re
-                value = float(re.findall(r"[-+]?\d*\.\d+|\d+", line)[0])
-                # ===调试===
-                # print(f"Extracted predicted value: {value}")
-                pred_list.append(value)
-    
-    label = np.array(label_list, dtype=float).reshape(-1)
-    pred = np.array(pred_list, dtype=float).reshape(-1)
-    plot_sorted_curve(label, pred)
+# # 示例 CSV：ID,True,Pred
+# df = pd.read_csv("example_sorted_curve.csv")
+
+# y_true = df["True"].values
+# y_pred = df["Pred"].values
+
+# plot_sorted_curve(y_true, y_pred, save_path="sorted_curve_example.png")
+
+# ID,True,Pred
+# 1,3.0,2.8
+# 2,5.0,5.2
+# 3,7.0,6.5
+# 4,9.0,8.9
+# 5,11.0,11.3
+# 6,6.5,6.8
+# 7,8.2,8.0
+# 8,10.1,10.0
